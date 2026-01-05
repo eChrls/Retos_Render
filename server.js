@@ -3,21 +3,33 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Función para validar estructura HTML básica
+// Función para validar estructura HTML con validación real
 function validateHTML(htmlContent) {
-  const requiredTags = [
-    "<!DOCTYPE html>",
-    "<html",
-    "<head>",
-    "<body>",
-    "</html>",
-  ];
+  const { HtmlValidate } = require("html-validate");
+  const htmlvalidate = new HtmlValidate({
+    extends: ["html-validate:recommended"],
+    rules: {
+      "doctype-html": "error",
+      "void-style": "off",
+      "no-trailing-whitespace": "off",
+    },
+  });
 
-  for (let tag of requiredTags) {
-    if (!htmlContent.includes(tag)) {
-      throw new Error(`HTML inválido: falta la etiqueta ${tag}`);
+  const report = htmlvalidate.validateString(htmlContent);
+
+  if (!report.valid) {
+    // Recoger todos los errores de forma segura
+    let errors = "HTML con errores de estructura";
+    if (
+      report.results &&
+      report.results.length > 0 &&
+      report.results[0].messages
+    ) {
+      errors = report.results[0].messages.map((msg) => msg.message).join(", ");
     }
+    throw new Error(`HTML inválido: ${errors}`);
   }
+
   return true;
 }
 

@@ -18,6 +18,7 @@
     "express": "^5.2.1"
   },
   "devDependencies": {
+    "html-validate": "^10.5.0",
     "jest": "^30.2.0",
     "supertest": "^7.1.4"
   }

@@ -8,23 +8,34 @@ const {
 
 describe("Tests Unitarios - Funciones del servidor", () => {
   test("validateHTML debe validar HTML correcto", () => {
-    const htmlValido = "<!DOCTYPE html><html><head></head><body></body></html>";
+    const htmlValido = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test</title>
+</head>
+<body>
+  <h1>Test</h1>
+</body>
+</html>`;
     expect(() => validateHTML(htmlValido)).not.toThrow();
     expect(validateHTML(htmlValido)).toBe(true);
   });
 
-  test("validateHTML debe fallar si falta DOCTYPE", () => {
-    const htmlInvalido = "<html><head></head><body></body></html>";
-    expect(() => validateHTML(htmlInvalido)).toThrow(
-      "HTML inválido: falta la etiqueta <!DOCTYPE html>"
-    );
+  test("validateHTML debe fallar si el HTML está malformado", () => {
+    const htmlInvalido = `<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+  <>Título roto</h1>
+</body>
+</html>`;
+    expect(() => validateHTML(htmlInvalido)).toThrow("HTML inválido");
   });
 
-  test("validateHTML debe fallar si falta etiqueta html", () => {
-    const htmlInvalido = "<!DOCTYPE html><head></head><body></body>";
-    expect(() => validateHTML(htmlInvalido)).toThrow(
-      "HTML inválido: falta la etiqueta <html"
-    );
+  test("validateHTML debe fallar si falta DOCTYPE", () => {
+    const htmlInvalido = "<html><head></head><body></body></html>";
+    expect(() => validateHTML(htmlInvalido)).toThrow("HTML inválido");
   });
 
   test("getServerUptime debe retornar segundos transcurridos", () => {
