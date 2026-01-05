@@ -7,7 +7,7 @@ const {
 } = require("./server");
 
 describe("Tests Unitarios - Funciones del servidor", () => {
-  test("validateHTML debe validar HTML correcto", () => {
+  test("validateHTML debe validar HTML correcto", async () => {
     const htmlValido = `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,11 +18,10 @@ describe("Tests Unitarios - Funciones del servidor", () => {
   <h1>Test</h1>
 </body>
 </html>`;
-    expect(() => validateHTML(htmlValido)).not.toThrow();
-    expect(validateHTML(htmlValido)).toBe(true);
+    await expect(validateHTML(htmlValido)).resolves.toBe(true);
   });
 
-  test("validateHTML debe fallar si el HTML está malformado", () => {
+  test("validateHTML debe fallar si el HTML está malformado", async () => {
     const htmlInvalido = `<!DOCTYPE html>
 <html>
 <head></head>
@@ -30,12 +29,12 @@ describe("Tests Unitarios - Funciones del servidor", () => {
   <>Título roto</h1>
 </body>
 </html>`;
-    expect(() => validateHTML(htmlInvalido)).toThrow("HTML inválido");
+    await expect(validateHTML(htmlInvalido)).rejects.toThrow("HTML inválido");
   });
 
-  test("validateHTML debe fallar si falta DOCTYPE", () => {
+  test("validateHTML debe fallar si falta DOCTYPE", async () => {
     const htmlInvalido = "<html><head></head><body></body></html>";
-    expect(() => validateHTML(htmlInvalido)).toThrow("HTML inválido");
+    await expect(validateHTML(htmlInvalido)).rejects.toThrow("HTML inválido");
   });
 
   test("getServerUptime debe retornar segundos transcurridos", () => {

@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Función para validar estructura HTML con validación real
-function validateHTML(htmlContent) {
+async function validateHTML(htmlContent) {
   const { HtmlValidate } = require("html-validate");
   const htmlvalidate = new HtmlValidate({
     extends: ["html-validate:recommended"],
@@ -15,7 +15,7 @@ function validateHTML(htmlContent) {
     },
   });
 
-  const report = htmlvalidate.validateString(htmlContent);
+  const report = await htmlvalidate.validateString(htmlContent);
 
   if (!report.valid) {
     // Recoger todos los errores de forma segura
@@ -64,11 +64,11 @@ app.get("/health", (req, res) => {
 });
 
 // Endpoint para validar HTML
-app.get("/api/validate", (req, res) => {
+app.get("/api/validate", async (req, res) => {
   const fs = require("fs");
   try {
     const htmlContent = fs.readFileSync("index.html", "utf8");
-    validateHTML(htmlContent);
+    await validateHTML(htmlContent);
     res.json({ valid: true, message: "HTML válido" });
   } catch (error) {
     res.status(400).json({ valid: false, message: error.message });
